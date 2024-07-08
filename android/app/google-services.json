@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "451469829419",
+    "project_id": "expresso-app-5b2db",
+    "storage_bucket": "expresso-app-5b2db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451469829419:android:bcc9692e604720f1f4916e",
+        "android_client_info": {
+          "package_name": "team.codesmith.expresso"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAj0jY5_t-qZPZzAVE_ejp6HPMi3KSoP6Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

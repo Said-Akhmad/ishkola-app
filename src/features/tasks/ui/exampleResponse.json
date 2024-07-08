@@ -1,0 +1,367 @@
+{
+  "id": "e68dff2b-7be9-43b4-9e4d-737158edccc0",
+  "accountId": 100,
+  "objectData": {
+    "name": "Test Offline Form",
+    "wizard": false,
+    "defaults": {
+      "not_supported_element_with_script": "console.log('some script not supported in mobile');\nreturn 'not supported in mobile';"
+    },
+    "elements": [
+      {
+        "id": "aedd048e-6860-446c-bb7d-73b23b06b852",
+        "fields": [
+          {
+            "id": "da575e01-1a41-4dc0-8624-599c84c99719",
+            "text": "Test Label",
+            "type": "label",
+            "align": null,
+            "width": "",
+            "height": "",
+            "formEvents": [],
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "344192ee-944a-4f49-bf4b-e7998fe41152",
+        "fields": [
+          {
+            "id": "2a6255a5-84cb-4b8b-9d44-1dc410c69741",
+            "text": "Test Header",
+            "type": "header",
+            "align": null,
+            "width": "",
+            "height": "",
+            "formEvents": [],
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "55e801fa-624e-4896-bc8a-dd2138f41a20",
+        "fields": [
+          {
+            "id": "e68e31fc-1446-4e7b-8581-8e9d096e4cff",
+            "name": "test_text_element_name",
+            "type": "text",
+            "align": null,
+            "label": "Test Text",
+            "width": "",
+            "height": "",
+            "disabled": false,
+            "required": true,
+            "formEvents": [],
+            "placeholder": "Начните вводить здесь",
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "9e8b210c-0f40-45b4-a46d-b94290594955",
+        "fields": [
+          {
+            "id": "d60638f5-b600-4281-8bd2-cb8d3caf7116",
+            "name": "test_textarea_name",
+            "type": "textarea",
+            "align": null,
+            "label": "Test text area name",
+            "width": "",
+            "height": "",
+            "disabled": false,
+            "required": true,
+            "formEvents": [],
+            "placeholder": "Начните вводить здесь",
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "d5d8bc86-7107-48a9-997c-4ed4dfcb4906",
+        "fields": [
+          {
+            "id": "6b81674c-b5b3-45c4-a4ca-73099fb74669",
+            "name": "test_select",
+            "type": "select",
+            "align": null,
+            "label": "Test Select Dropdown",
+            "width": "",
+            "height": "",
+            "choices": [
+              {
+                "label": "Option name 2",
+                "value": "value2"
+              },
+              {
+                "label": "Option name 3",
+                "value": "value3"
+              },
+              {
+                "label": "Option name 1",
+                "value": "value1"
+              }
+            ],
+            "disabled": true,
+            "required": true,
+            "dictionary": {
+              "url": "https://",
+              "label": "",
+              "value": "",
+              "object": ""
+            },
+            "formEvents": [],
+            "scanBarCode": false,
+            "isDictionary": false,
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "ff5d3aef-177a-4b4f-8b2c-a6b5ee027eda",
+        "fields": [
+          {
+            "id": "34b82f4c-83e8-4b91-ad13-0c6c98e41268",
+            "name": "test_select_group_name",
+            "type": "selectGroup",
+            "align": null,
+            "label": "Test Select Group",
+            "width": "",
+            "height": "",
+            "choices": [
+              {
+                "label": "option 1 value",
+                "value": "option1value"
+              },
+              {
+                "label": "option 2 value",
+                "value": "option2value"
+              }
+            ],
+            "disabled": true,
+            "required": true,
+            "dictionary": {
+              "url": "https://",
+              "label": "",
+              "value": "",
+              "object": ""
+            },
+            "formEvents": [],
+            "scanBarCode": false,
+            "isDictionary": false,
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "bf399f27-9186-4681-9763-7d534b003969",
+        "fields": [
+          {
+            "id": "d553aabb-b88b-48f0-95fb-d6bb2cbfd13f",
+            "name": "test_radio_button_name",
+            "type": "radio",
+            "align": null,
+            "label": "Test Radio Button",
+            "width": "",
+            "height": "",
+            "choices": [
+              {
+                "label": "Option value 1",
+                "value": "value1"
+              },
+              {
+                "label": "Option value 2",
+                "value": "value2"
+              },
+              {
+                "label": "Option value 3",
+                "value": "value3"
+              }
+            ],
+            "disabled": true,
+            "required": true,
+            "formEvents": [],
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "6830121e-ea04-47e2-be12-689af022b9e4",
+        "fields": [
+          {
+            "id": "c5507a84-d6d5-40f4-b38b-076c2c9ff8cd",
+            "name": "test_checkbox_name",
+            "type": "checkbox",
+            "align": null,
+            "label": "Test Checkbox",
+            "width": "",
+            "height": "",
+            "disabled": true,
+            "required": true,
+            "formEvents": [],
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "203ab812-36ba-47d1-b860-9f8caa0eacc8",
+        "fields": [
+          {
+            "id": "bdd84d73-f9ff-4396-96c6-c13d5d8850c1",
+            "name": "test_date_name",
+            "type": "date",
+            "align": null,
+            "label": "Test Date",
+            "width": "",
+            "height": "",
+            "disabled": true,
+            "required": true,
+            "formEvents": [],
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "3f1db16b-932f-459e-bd05-5496370e6e56",
+        "fields": [
+          {
+            "id": "d5f01640-d0d2-498f-bd23-e0fc9438fb1d",
+            "name": "test_time_name",
+            "type": "time",
+            "align": null,
+            "label": "Test Time",
+            "width": "",
+            "height": "",
+            "disabled": true,
+            "required": true,
+            "formEvents": [],
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "cd15edb5-5f2b-4c37-9b3f-20f201508387",
+        "fields": [
+          {
+            "id": "16d6ffbb-bded-407c-a387-d914a3847757",
+            "name": "test_file_name",
+            "type": "file",
+            "align": null,
+            "label": "Test File",
+            "width": "",
+            "height": "",
+            "disabled": true,
+            "required": true,
+            "formEvents": [],
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "a574e543-21a6-4820-9bfe-3b8cc90d45f3",
+        "fields": [
+          {
+            "id": "1bef5f6c-40c1-474a-ae05-e7f3efde0256",
+            "name": "test_file_group_name",
+            "type": "fileGroup",
+            "align": null,
+            "label": "Test File Group",
+            "width": "",
+            "height": "",
+            "disabled": true,
+            "required": true,
+            "formEvents": [],
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "05766c4e-2b6f-4662-a345-988913bfe049",
+        "fields": [
+          {
+            "id": "3fcc43a3-e917-4e0d-9174-3982ef0a3183",
+            "max": 100,
+            "min": 0,
+            "name": "test_number_name",
+            "type": "number",
+            "align": null,
+            "label": "Test Number",
+            "width": "",
+            "height": "",
+            "disabled": true,
+            "required": true,
+            "formEvents": [],
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "301cf4b0-c123-4722-9dda-e687561c0b59",
+        "fields": [
+          {
+            "id": "0b81d87b-f487-4f78-8ee3-f30b75b06d8f",
+            "name": "test_image_name",
+            "type": "image",
+            "align": null,
+            "image": "",
+            "label": "Test Image",
+            "width": "",
+            "height": "",
+            "schema": "",
+            "disabled": true,
+            "required": true,
+            "background": "",
+            "formEvents": [],
+            "transferFields": "",
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "079a6ebe-db0a-4c38-8d17-4d185fa094fb",
+        "fields": [
+          {
+            "id": "8f201d55-5ee4-41a8-9e80-3fe975f6cf4d",
+            "name": "test_image_group",
+            "type": "imageGroup",
+            "align": null,
+            "image": "",
+            "label": "Test Image Group",
+            "width": "",
+            "height": "",
+            "schema": "",
+            "disabled": true,
+            "required": true,
+            "background": "",
+            "formEvents": [],
+            "transferFields": "",
+            "conditionVisibility": "true"
+          }
+        ]
+      },
+      {
+        "id": "3bf27262-541b-4bb5-b99a-a593f12b1657",
+        "fields": [
+          {
+            "id": "197e7752-dfc6-409e-8ec8-897e579ab4d8",
+            "name": "test_photo_name",
+            "type": "photo",
+            "align": null,
+            "label": "Test Photo",
+            "width": "",
+            "height": "",
+            "disabled": true,
+            "required": true,
+            "formEvents": [],
+            "conditionVisibility": "true"
+          }
+        ]
+      }
+    ],
+    "submitUrl": "https://app.dev.rad.codesmith.space/api/workflows/process-instances/event",
+    "buttonLabel": "Отправить"
+  },
+  "createdBy": "anzor.israilov@codesmith.space",
+  "updatedBy": "anzor.israilov@codesmith.space",
+  "createdTime": "2024-06-18T09:38:42.582Z",
+  "updatedTime": "2024-06-18T10:56:08.508Z"
+}
