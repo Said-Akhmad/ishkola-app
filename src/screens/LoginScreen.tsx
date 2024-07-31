@@ -17,9 +17,11 @@ export default function LoginScreen() {
     const buttonScript = `
       (function() {
         function onButtonClick() {
+      
           setTimeout(() => {
             // Add logic here to interact with localStorage
             const userData = JSON.parse(localStorage.getItem('userData'));
+            alert(userData.token);
              window.ReactNativeWebView.postMessage(JSON.stringify({action: 'login', token: userData.token}));
           }, 2000); // 500ms delay to ensure localStorage is ready
         }
@@ -51,6 +53,7 @@ export default function LoginScreen() {
       console.log('data', data);
       if (data?.action === 'login' && data?.token) {
         dispatch(loginAction(data.token));
+        notificationInitialized();
       } 
     } catch (e) {
       console.log(e);

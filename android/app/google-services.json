@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "451469829419",
-    "project_id": "expresso-app-5b2db",
-    "storage_bucket": "expresso-app-5b2db.appspot.com"
+    "project_number": "368351709572",
+    "project_id": "ishkola-818e5",
+    "storage_bucket": "ishkola-818e5.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:451469829419:android:bcc9692e604720f1f4916e",
+        "mobilesdk_app_id": "1:368351709572:android:b872a319f9869a8e0c75d1",
         "android_client_info": {
-          "package_name": "team.codesmith.expresso"
+          "package_name": "com.ishkola.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAj0jY5_t-qZPZzAVE_ejp6HPMi3KSoP6Y"
+          "current_key": "AIzaSyAWXty4uqAn6QZLUt1iBAntP8Ei1zGTGSo"
         }
       ],
       "services": {
