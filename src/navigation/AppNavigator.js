@@ -1,10 +1,9 @@
 import { Provider, useSelector } from 'react-redux';
-import { store } from '../store/store';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/LoginScreen';
+import WebViewScreen from '../screens/WebViewScreen';
 import TabNavigation from './TabNavigation';
-import { DarkModeProvider } from '../screens/DarkModeContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -12,8 +11,7 @@ const AppNavigator = () => {
   const isSignedIn = useSelector(state => state.userData.isSignedIn);
 
   return (
-    <Provider store={store}>
-      <DarkModeProvider>
+    
         <NavigationContainer>
           <Stack.Navigator>
             {isSignedIn ? (
@@ -29,15 +27,15 @@ const AppNavigator = () => {
                 options={{ headerShown: false }}
               />
             )}
+
             <Stack.Screen 
                 name="WebViewScreen"
-                component={LoginScreen}
+                component={WebViewScreen}
                 options={{ headerShown: false }}
               />
           </Stack.Navigator>
         </NavigationContainer>
-      </DarkModeProvider>
-    </Provider>
+     
   );
 };
 

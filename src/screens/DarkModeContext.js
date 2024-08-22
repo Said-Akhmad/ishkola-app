@@ -10,7 +10,6 @@ export const DarkModeProvider = ({ children }) => {
     const fetchTheme = async () => {
       try {
         const storedTheme = await AsyncStorage.getItem('skin');
-        console.log('@@@'+storedTheme);
         if (storedTheme !== null) {
           setIsDarkened(JSON.parse(storedTheme) === 'dark');
         }

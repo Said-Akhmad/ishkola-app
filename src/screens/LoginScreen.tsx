@@ -17,11 +17,9 @@ export default function LoginScreen() {
     const buttonScript = `
       (function() {
         function onButtonClick() {
-      
           setTimeout(() => {
             // Add logic here to interact with localStorage
             const userData = JSON.parse(localStorage.getItem('userData'));
-            alert(userData.token);
              window.ReactNativeWebView.postMessage(JSON.stringify({action: 'login', token: userData.token}));
           }, 2000); // 500ms delay to ensure localStorage is ready
         }
@@ -35,22 +33,12 @@ export default function LoginScreen() {
     webViewRef?.current?.injectJavaScript(buttonScript);
   };
 
-  // const checkIfUserIsLoggedIn = () => {
-  //   const checkScript = `
-  //     function(){
-  //      console.log('!!!!!')
-  //     }
-     
-  //   `;
-  //   webViewRef.current?.injectJavaScript(checkScript);
-  // };
-
+  
 
   const onMessageWebView = (event: any) => {
-   
     try {
       const data = JSON.parse(event.nativeEvent?.data);
-      console.log('data', data);
+      console.log('1 data:', data);
       if (data?.action === 'login' && data?.token) {
         dispatch(loginAction(data.token));
         notificationInitialized();
@@ -68,7 +56,7 @@ export default function LoginScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <WebView
         ref={webViewRef}
-        source={{ uri: 'https://lk.ishkola.com/login' }}
+        source={{ uri: 'https://dev.ishkola.com/login' }}
         style={styles.webview}
         renderLoading={() => <Indicator />} // Показываем индикатор загрузки
         onLoad={injectButtonClickListener}

@@ -7,7 +7,7 @@ export const notificationInitialized = async () => {
     await notifee.requestPermission();
     await messaging().registerDeviceForRemoteMessages();
     const token = await messaging().getToken();
-    console.log('fcm_token', token);
+    console.log('2 fcm_token:', token);
 
     await setToken(token);
   } catch (error) {

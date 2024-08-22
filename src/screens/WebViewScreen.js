@@ -1,146 +1,265 @@
-import React, { useRef, useContext, useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { WebView } from 'react-native-webview';
-import { View, StyleSheet, BackHandler, RefreshControl, ScrollView } from 'react-native';
+import { View, StyleSheet, BackHandler, SafeAreaView, ScrollView, RefreshControl, Platform, AppState, Modal, Button, Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { logoutAction } from '../store/userActions';
-import { DarkModeContext } from '../screens/DarkModeContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import RNRestart from 'react-native-restart';
-import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
+import { Indicator } from '../shared/ui/Indicator';
+import { useFocusEffect, useNavigation, useNavigationState } from '@react-navigation/native';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { sleep } from 'shared/lib/utils/sleep';
 
-const WebViewScreen = () => {
-  const [previousUrl, setPreviousUrl] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
-  const navigation = useNavigation();
-  const route = useRoute();
-  const webViewRef = useRef(null);
+
+const WebViewScreen = ({ route }) => {
   const dispatch = useDispatch();
-  const { isDarkened, toggleDarkMode } = useContext(DarkModeContext);
-
+  const navigation = useNavigation();
+  const webViewRef = useRef(null);
+  const { isConnected } = useNetInfo();
   const url = route?.params?.url;
+  const isTasksScreen = route?.params?.isTasksScreen;
 
-  const logout = () => {
-    dispatch(logoutAction());
-  };
+  const [canGoBack, setCanGoBack] = useState(false);
+  const [isMainScreen, setIsMainScreen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalUrl, setModalUrl] = useState('');
+  const [previousUrl, setPreviousUrl] = useState('');
+  const [currentTab, setCurrentTab] = useState('default'); // Добавляем состояние для текущей вкладки
 
-  const onNavigationStateChange = (navState) => {
-    if (navState.url === 'https://lk.ishkola.com/login') {
-      logout();
-    } else if (navState.url.includes('settings')) {
-      setPreviousUrl(navState.url);
+
+  const action = route?.params?.action;
+
+
+
+
+
+
+  // Получаем текущее состояние навигации для отслеживания вкладок
+  const navigationState = useNavigationState(state => state);
+
+  // Обработка нажатия кнопки "Назад"
+  const handleBackButton = () => {
+    if (canGoBack) {
+      webViewRef.current.goBack();
+      return true;
+    } else if (isMainScreen) {
+      BackHandler.exitApp();
+      return true;
+    } else {
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+        return true;
+      } else {
+        return false;
+      }
     }
   };
 
-  const onMessageWebView = async (event) => {
-    const message = JSON.parse(event.nativeEvent.data);
+  // Обработка изменений навигации
+  const handleNavigationChange = (navState) => {
+    const url = navState.url;
+    if (url !== previousUrl) {
+      setPreviousUrl(url);
+      setCanGoBack(navState.canGoBack);
+      setIsMainScreen(url === 'https://dev.ishkola.com/home');
 
-    if (message.action === 'toggleDarkMode') {
-      await toggleDarkMode(message.skin === 'dark');
-      setTimeout(() => {
-        RNRestart.Restart();
-      }, 1000);
+      if (Platform.OS === 'ios' && url.includes('error=login_required')) {
+        logout();
+      }
+
+      if (Platform.OS === 'android' && url.includes('auth?client_id')) {
+        logout();
+      }
+
+      if (url === 'https://dev.ishkola.com/login') {
+        logout();
+      }
     }
   };
 
+  // Определение, следует ли загружать запрос
+  const handleShouldStartLoadWithRequest = (request) => {
+    const { url } = request;
+    if (url.includes('https://deshar.ishkola.com/playback/presentation/2.3/ccddaf626302032b0414003d6d4ebbfe4b3f99af-1724000944109')) {
+      return false;
+    }
+    return true;
+  };
+
+  // JavaScript-код для внедрения в WebView
   const injectJavaScript = `
     (function() {
-      const mobileMenu = document.querySelector('.mobile-menu.mr-auto.nav-item');
-      const navLinkStyle = document.querySelector('.nav-link-style.nav-link');
-      if (mobileMenu) mobileMenu.remove();
-      if (navLinkStyle) navLinkStyle.remove();
-      document.querySelector('.dropdown-item').addEventListener('click', function() {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'navigateToSettings' }));
+      function removeElementsByClass(className) {
+        const elements = document.querySelectorAll(className);
+        elements.forEach(element => element.remove());
+      }
+
+      document.querySelectorAll('.nav-menu-main, .nav-link-style.nav-link').forEach(element => {
+        element.style.display = 'none';
       });
+
+      removeElementsByClass('.nav-menu-main');
+      removeElementsByClass('.nav-link-style.nav-link');
+
+      window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'loaded' }));
+
+      var meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+      document.getElementsByTagName('head')[0].appendChild(meta);
+
+      setTimeout(() => {
+        document.addEventListener('click', function(event) {
+          const target = event.target;
+          if (target.tagName === 'A' && target.href) {
+            event.preventDefault();
+            window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'linkClick', url: target.href }));
+          }
+        });
+      }, 100);
     })();
     true;
   `;
 
-  useEffect(() => {
-    const updateSkinInWebView = async () => {
-      const skin = isDarkened ? 'dark' : 'light';
-      const currentSkin = await AsyncStorage.getItem('skin');
-      console.log('!!!' + currentSkin);
+  // Функция для выхода из системы
+  const logout = () => {
+    dispatch(logoutAction());
+  };
 
-      if (currentSkin !== JSON.stringify(skin)) {
-        await AsyncStorage.setItem('skin', JSON.stringify(skin));
-        setTimeout(() => {
-          webViewRef.current.injectJavaScript(`
-            localStorage.setItem('skin', JSON.stringify('${skin}'));
-          `);
-        }, 3);
+  // Обработка обновления страницы
+  const onRefresh = () => {
+    setIsLoading(true);
+    webViewRef.current?.reload();
+    setIsLoading(false);
+  };
+
+  // Обработка сообщений от WebView
+  const handleMessage = async event => {
+    try {
+      const data = JSON.parse(event.nativeEvent?.data);
+
+      if (data?.action === 'logout') {
+        await sleep(300);
+        logout();
       }
-    };
 
-    updateSkinInWebView();
-  }, [isDarkened]);
+      if (data?.action === 'scroll') {
+        setIsAtTop(data.value <= 0);
+      }
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const onBackPress = () => {
-        if (previousUrl) {
-          console.log(previousUrl);
-          webViewRef.current.goBack();
-          setPreviousUrl(null);
-          return true;
-        } else if (navigation.canGoBack()) {
-          console.log('Can go back', navigation.canGoBack);
-          navigation.goBack();
-          return true;
-        }
-        return false;
-      };
-
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
-      return () => {
-        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-      };
-    }, [previousUrl, navigation])
-  );
-
-  const onRefresh = useCallback(() => {
-    if (scrollY <= 0) {  // Обновляем только если находимся в самом верху страницы
-      setRefreshing(true);
-      webViewRef.current.reload();
-      setTimeout(() => setRefreshing(false), 2000);
+      if (data?.action === 'linkClick') {
+        const linkUrl = data.url;
+        console.log('Clicked link URL:', linkUrl);
+        webViewRef.current?.loadUrl(linkUrl);
+        setModalUrl(linkUrl);
+        setModalVisible(true);
+      }
+    } catch (e) {
+      console.error('Error in handleMessage:', e);
     }
-  }, [scrollY]);
+  };
+
+
+
+
+  useEffect(() => {
+    if (action === 'goBack' && webViewRef.current) {
+      webViewRef.current.goBack();
+    }
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    const appStateListener = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState === 'active') {
+        setCanGoBack(false);
+        setIsMainScreen(false);
+      }
+    },[action]);
+
+    return () => {
+      backHandler.remove();
+      appStateListener.remove();
+    };
+  }, [canGoBack, isMainScreen]);
+
+  useEffect(() => {
+    // Обновляем текущее состояние вкладки
+    const currentTab = navigationState.routes[navigationState.index].name;
+    setCurrentTab(currentTab);
+  }, [navigationState]);
+
+ 
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={{ flex: 1 }}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#000"
-            colors={['#000']}
+    <SafeAreaView style={styles.webview}>
+      {isTasksScreen && <SwitchTasksButton />}
+      {url && (
+        <ScrollView
+          contentContainerStyle={{ flex: 1 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={onRefresh}
+              enabled={isAtTop}
+            />
+          }
+        >
+          <WebView
+            ref={webViewRef}
+            source={{ uri: url }}
+            style={styles.webview}
+            renderLoading={() => <Indicator />}
+            startInLoadingState={true}
+            onMessage={handleMessage}
+            onNavigationStateChange={handleNavigationChange}
+            onShouldStartLoadWithRequest={handleShouldStartLoadWithRequest}
+            injectedJavaScript={injectJavaScript}
+            geolocationEnabled={true}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
           />
-        }
-        onScroll={(event) => {
-          setScrollY(event.nativeEvent.contentOffset.y);
-        }}
-        scrollEventThrottle={16}
+        </ScrollView>
+      )}
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
       >
-        <WebView
-          ref={webViewRef}
-          source={{ uri: url }}
-          onMessage={onMessageWebView}
-          javaScriptEnabled={true}
-          injectedJavaScript={injectJavaScript}
-          onNavigationStateChange={onNavigationStateChange}
-          style={{ flex: 1, height: '100%' }}
-        />
-      </ScrollView>
-    </View>
+        <SafeAreaView style={styles.modalContainer}>
+          <WebView
+            source={{ uri: modalUrl }}
+            style={styles.modalWebview}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+          />
+          <Button title="Закрыть" onPress={() => setModalVisible(false)} />
+        </SafeAreaView>
+      </Modal>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  webview: {
     flex: 1,
+    backgroundColor: '#f5f5ff',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  modalWebview: {
+    flex: 1,
+  },
+  header: {
+    marginBottom: 10,
+    marginTop: 5,
+    alignItems: 'center',
+  },
+  headerText: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#000000',
   },
 });
 

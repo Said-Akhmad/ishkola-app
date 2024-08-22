@@ -23,18 +23,9 @@ const AppNavigator = () => {
               options={{headerShown: false}}
               component={TabNavigation}
             />
-            {/* <Stack.Screen
-              name={'ImageEditorScreen'}
-              options={{headerShown: false}}
-              component={ImageEditorScreen}
-            />
-            <Stack.Screen
-              name={'TaskEditScreen'}
-              options={{headerShown: false}}
-              component={TaskEditScreen}
-            /> */}
+          
 
-          </Stack.Navigator>
+        </Stack.Navigator>
         </NavigationContainer>
       </Provider>
     );

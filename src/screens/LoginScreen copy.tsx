@@ -1,67 +1,67 @@
 import { StyleSheet, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useDispatch } from 'react-redux';
-import { loginAction } from '../store/userActions';
+import { loginAction, logoutAction } from '../store/userActions';
 import { Indicator } from '../shared/ui/Indicator';
 import { notificationInitialized } from '../entities/notification';
-import React, { useState, useRef, useEffect } from 'react';
-import { logoutAction } from '../store/userActions'; // Предположим, что это ваш action
-
+import React, { useRef } from 'react';
 
 export default function LoginScreen() {
   const dispatch = useDispatch();
-  const [isLoginPage, setIsLoginPage] = useState(false);
   const webViewRef = useRef<WebView | null>(null);
 
   const injectButtonClickListener = () => {
     const buttonScript = `
       (function() {
-        function onButtonClick() {
-        alert('Login clickted');
+        // Function to handle login button click
+        function onLoginButtonClick() {
+          alert('Login clicked');
           setTimeout(() => {
-            // Add logic here to interact with localStorage
             const userData = JSON.parse(localStorage.getItem('userData'));
-            alert(userData.token);
-             window.ReactNativeWebView.postMessage(JSON.stringify({action: 'login', token: userData.token}));
-          }, 2000); // 500ms delay to ensure localStorage is ready
+            if (userData && userData.token) {
+              alert(userData.token);
+              window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'login', token: userData.token }));
+            }
+          }, 2000);
         }
-        var button = document.querySelector('.waves-effect.btn.btn-primary.btn-block');
-        if (button) {
-          button.addEventListener('click', onButtonClick);
+
+        // Function to handle logout button click
+        function onLogoutButtonClick() {
+          alert('Logout clicked');
+          window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'logout' }));
+        }
+
+        // Attach the login button click event listener
+        var loginButton = document.querySelector('.waves-effect.btn.btn-primary.btn-block');
+        if (loginButton) {
+          loginButton.addEventListener('click', onLoginButtonClick);
+        }
+
+        // Attach the logout button click event listener
+        var logoutButton = document.querySelector('a.dropdown-item[href="/logout"]');
+        if (logoutButton) {
+          logoutButton.addEventListener('click', onLogoutButtonClick);
         }
       })();
-      true; // note: this is required, or you'll sometimes get silent failures
+      true; // this is required, or you'll sometimes get silent failures
     `;
     webViewRef?.current?.injectJavaScript(buttonScript);
   };
 
-  // const checkIfUserIsLoggedIn = () => {
-  //   const checkScript = `
-  //     function(){
-  //      console.log('!!!!!')
-  //     }
-     
-  //   `;
-  //   webViewRef.current?.injectJavaScript(checkScript);
-  // };
-
-
   const onMessageWebView = (event: any) => {
-   
     try {
       const data = JSON.parse(event.nativeEvent?.data);
       console.log('data', data);
       if (data?.action === 'login' && data?.token) {
         dispatch(loginAction(data.token));
-      } 
+        notificationInitialized();
+      } else if (data?.action === 'logout') {
+        dispatch(logoutAction());
+      }
     } catch (e) {
       console.log(e);
     }
   };
-
-  // useEffect(() => {
-  //   checkIfUserIsLoggedIn();
-  // }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
