@@ -8,7 +8,6 @@ import { useFocusEffect, useNavigation, useNavigationState } from '@react-naviga
 import { useNetInfo } from '@react-native-community/netinfo';
 import { sleep } from 'shared/lib/utils/sleep';
 
-
 const WebViewScreen = ({ route }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -24,20 +23,12 @@ const WebViewScreen = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalUrl, setModalUrl] = useState('');
   const [previousUrl, setPreviousUrl] = useState('');
-  const [currentTab, setCurrentTab] = useState('default'); // Добавляем состояние для текущей вкладки
-
+  const [currentTab, setCurrentTab] = useState('default');
 
   const action = route?.params?.action;
 
-
-
-
-
-
-  // Получаем текущее состояние навигации для отслеживания вкладок
   const navigationState = useNavigationState(state => state);
 
-  // Обработка нажатия кнопки "Назад"
   const handleBackButton = () => {
     if (canGoBack) {
       webViewRef.current.goBack();
@@ -55,7 +46,6 @@ const WebViewScreen = ({ route }) => {
     }
   };
 
-  // Обработка изменений навигации
   const handleNavigationChange = (navState) => {
     const url = navState.url;
     if (url !== previousUrl) {
@@ -77,16 +67,7 @@ const WebViewScreen = ({ route }) => {
     }
   };
 
-  // Определение, следует ли загружать запрос
-  const handleShouldStartLoadWithRequest = (request) => {
-    const { url } = request;
-    if (url.includes('https://deshar.ishkola.com/playback/presentation/2.3/ccddaf626302032b0414003d6d4ebbfe4b3f99af-1724000944109')) {
-      return false;
-    }
-    return true;
-  };
 
-  // JavaScript-код для внедрения в WebView
   const injectJavaScript = `
     (function() {
       function removeElementsByClass(className) {
@@ -101,39 +82,28 @@ const WebViewScreen = ({ route }) => {
       removeElementsByClass('.nav-menu-main');
       removeElementsByClass('.nav-link-style.nav-link');
 
-      window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'loaded' }));
 
       var meta = document.createElement('meta');
-      meta.name = 'viewport';
       meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
       document.getElementsByTagName('head')[0].appendChild(meta);
 
-      setTimeout(() => {
-        document.addEventListener('click', function(event) {
-          const target = event.target;
-          if (target.tagName === 'A' && target.href) {
-            event.preventDefault();
-            window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'linkClick', url: target.href }));
-          }
-        });
-      }, 100);
+      window.addEventListener('scroll', function() {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'scroll', value: window.scrollY }));
+      });
     })();
     true;
   `;
 
-  // Функция для выхода из системы
   const logout = () => {
     dispatch(logoutAction());
   };
 
-  // Обработка обновления страницы
   const onRefresh = () => {
     setIsLoading(true);
     webViewRef.current?.reload();
     setIsLoading(false);
   };
 
-  // Обработка сообщений от WebView
   const handleMessage = async event => {
     try {
       const data = JSON.parse(event.nativeEvent?.data);
@@ -147,20 +117,11 @@ const WebViewScreen = ({ route }) => {
         setIsAtTop(data.value <= 0);
       }
 
-      if (data?.action === 'linkClick') {
-        const linkUrl = data.url;
-        console.log('Clicked link URL:', linkUrl);
-        webViewRef.current?.loadUrl(linkUrl);
-        setModalUrl(linkUrl);
-        setModalVisible(true);
-      }
+      
     } catch (e) {
       console.error('Error in handleMessage:', e);
     }
   };
-
-
-
 
   useEffect(() => {
     if (action === 'goBack' && webViewRef.current) {
@@ -173,7 +134,7 @@ const WebViewScreen = ({ route }) => {
         setCanGoBack(false);
         setIsMainScreen(false);
       }
-    },[action]);
+    }, [action]);
 
     return () => {
       backHandler.remove();
@@ -182,12 +143,9 @@ const WebViewScreen = ({ route }) => {
   }, [canGoBack, isMainScreen]);
 
   useEffect(() => {
-    // Обновляем текущее состояние вкладки
     const currentTab = navigationState.routes[navigationState.index].name;
     setCurrentTab(currentTab);
   }, [navigationState]);
-
- 
 
   return (
     <SafeAreaView style={styles.webview}>
@@ -211,7 +169,6 @@ const WebViewScreen = ({ route }) => {
             startInLoadingState={true}
             onMessage={handleMessage}
             onNavigationStateChange={handleNavigationChange}
-            onShouldStartLoadWithRequest={handleShouldStartLoadWithRequest}
             injectedJavaScript={injectJavaScript}
             geolocationEnabled={true}
             javaScriptEnabled={true}

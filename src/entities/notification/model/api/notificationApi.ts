@@ -26,26 +26,27 @@ export const setToken = async (fcmToken: string) => {
     console.log('5 Body and Headers: ',body,' ',headers)
     const response = await axios.post(
 
-      'https://api-dev.ishkola.com/api/v1/web-push/subscribe-app',
+      // 'https://f691-176-233-31-167.ngrok-free.app/v1/web-push/subscribe-app',
+      'https://3d9b-95-58-29-230.ngrok-free.app/v1/web-push/subscribe-app',
       body,
-      {
+      { 
         headers
       },
     );
     console.log('6 Response: ',response)    
-    Alert.alert(
-      "Подписка на уведомления",  // Заголовок
-      response.data.success,      // Сообщение
-      [{ text: "OK", onPress: () => console.log("OK Pressed") }], // Кнопка
-      { cancelable: true }       // Опция, чтобы можно было закрыть нажатием вне диалога
-    );
+    // Alert.alert(
+    //   "Подписка на уведомления",  // Заголовок
+    //   response.data.success,      // Сообщение
+    //   [{ text: "OK", onPress: () => console.log("OK Pressed") }], // Кнопка
+    //   { cancelable: true }       // Опция, чтобы можно было закрыть нажатием вне диалога
+    // );
 
     // Обработка ответа, если необходимо
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message)
     } else {
-      console.error('Unexpected error:', error.message);
+      console.error('Unexpected error:', error);
     }
   }
 };

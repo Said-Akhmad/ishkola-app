@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "778864773202",
-    "project_id": "ishkola-fbcc6",
-    "storage_bucket": "ishkola-fbcc6.appspot.com"
+    "project_number": "247112065896",
+    "project_id": "sampleishkolaproject",
+    "storage_bucket": "sampleishkolaproject.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:778864773202:android:dd7f7ed7f950566fa7778b",
+        "mobilesdk_app_id": "1:247112065896:android:24ae0d71a00a17d7162cdd",
         "android_client_info": {
           "package_name": "com.ishkola.app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDZGFLszY6vG1pXefV2pqNreOiwnXCabuE"
+          "current_key": "AIzaSyAMmfp_jC_1wEOcN-8OGdJKc6e4kZpfWpY"
         }
       ],
       "services": {
